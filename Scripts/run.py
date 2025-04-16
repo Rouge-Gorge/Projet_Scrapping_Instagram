@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from loguru import logger as log
 import asyncio
@@ -12,16 +11,6 @@ import os
 # Patch temporaire d'un bug qui existe en python 3.12 qui marque dans le terminal : Exception ignored in: <function _DeleteDummyThreadOnDel.__del__>
 import threading
 threading._DummyThread.__del__ = lambda self: None
-
-
-# Le nom du compte instagram à scrapper : 
-INSTAGRAM_USER = "account_to_scrapp"  
-
-# Le nombre de posts à scrapper :
-NUM_POSTS = 3  
-
-# Le nombre d'ambassadeurs que l'on souhaite :
-NB_AMBASSADEURS = 10 
 
 # Le chemin du fichier où vont finir les résultats
 output = Path(__file__).parent / "results"
@@ -67,7 +56,7 @@ async def run():
     log.success(f"Checkpoint : Bien réussi à scrapper {len(all_comments)} posts")
 
     # Sauvegarde avant flatten
-    output_posts.joinpath(f"{INSTAGRAM_USER}_{NUM_POSTS}_last_posts.json").write_text(json.dumps(all_comments, indent=2, ensure_ascii=False), encoding='utf-8')
+    output_posts.joinpath(f"{INSTAGRAM_USER}_{NUM_POSTS}_last_posts_BRUT.json").write_text(json.dumps(all_comments, indent=2, ensure_ascii=False), encoding='utf-8')
     log.success(f"Checkpoint : Le fichier {INSTAGRAM_USER}_{NUM_POSTS}_last_posts_BRUT.json a bien été écrit")
 
     # Flatten les commentaires (ça a sorti une erreur mais bien fonctionné quand même !)
@@ -84,7 +73,7 @@ async def run():
     df = pd.json_normalize(flattened_all_comments)
 
     # Afficher les 5 premières lignes du DataFrame, vérif
-    # print(df.head())
+    print(df.head())
 
 
     # Trouver les ambassadeurs du compte ! (les comptes qui ont commentés le plus de posts différents)
@@ -104,7 +93,7 @@ async def run():
                             .merge(total_likes, on='comment_owner')
 
     # 5. Trier par nombre de posts différents commentés (top contributeurs en reach)
-    top_n_ambassadeurs = summary.sort_values(by='nb_posts_commented', ascending=False).head({NB_AMBASSADEURS})
+    top_n_ambassadeurs = summary.sort_values(by='nb_posts_commented', ascending=False).head(NB_AMBASSADEURS)
 
     print(top_n_ambassadeurs)
 

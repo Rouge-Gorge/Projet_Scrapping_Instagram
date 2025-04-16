@@ -1,10 +1,4 @@
-"""
-This is an example web scraper for Instagram.com used in scrapfly blog article:
-https://scrapfly.io/blog/how-to-scrape-instagram/
 
-To run this scraper set env variable $SCRAPFLY_KEY with your scrapfly API key:
-$ export $SCRAPFLY_KEY="your key from https://scrapfly.io/dashboard"
-"""
 import json
 import os
 from typing import Dict, Optional
@@ -16,14 +10,12 @@ from scrapfly import ScrapeConfig, ScrapflyClient
 from pathlib import Path
 
 
-NB_POSTS_A_SCRAPPER = 3
+from config import API_KEY, INSTAGRAM_USER, NUM_POSTS, NB_AMBASSADEURS
 
-SCRAPFLY = scrapfly.ScrapflyClient(key="your-key")
+SCRAPFLY = scrapfly.ScrapflyClient(key= API_KEY)
 BASE_CONFIG = {
-    # Instagram.com requires Anti Scraping Protection bypass feature.
-    # for more: https://scrapfly.io/docs/scrape-api/anti-scraping-protection
     "asp": True,
-    "country": "FR",  # change country for relevant results
+    "country": "FR", 
 }
 INSTAGRAM_APP_ID = "936619743392459"  # this is the public app id for instagram.com
 INSTAGRAM_DOCUMENT_ID = "8845758582119845" # constant id for post documents instagram.com
